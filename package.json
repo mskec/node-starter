@@ -22,7 +22,6 @@
     "start:dev": "nodemon build/index.js",
     "db:migrate": "sequelize db:migrate",
     "db:migrate:undo": "sequelize db:migrate:undo",
-    "prepush": "npm run lint && npm test",
     "lint": "esw *.ts server/**/*.ts config/**/*.ts --color",
     "lint:watch": "npm run lint -- --watch",
     "lint:fix": "npm run lint -- --fix",
@@ -98,7 +97,7 @@
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-watch": "^6.0.0",
     "faker": "^4.1.0",
-    "husky": "2.5.0",
+    "husky": "4.0.10",
     "istanbul": "1.1.0-alpha.1",
     "mocha": "7.0.0",
     "mock-require": "^3.0.3",
@@ -107,5 +106,10 @@
     "sinon": "^7.3.2",
     "supertest": "^4.0.2",
     "typescript": "^3.7.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm run lint && npm test"
+    }
   }
 }
