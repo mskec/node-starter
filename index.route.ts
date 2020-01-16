@@ -13,6 +13,7 @@ router.use('/user', userRoutes);
 
 // Routes used for tests ONLY
 if (config.env !== 'production') {
+  // eslint-disable-next-line global-require
   router.use('/test', require('./server/routes/test.routes').default);
 }
 

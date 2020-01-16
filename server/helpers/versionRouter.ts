@@ -45,6 +45,7 @@ export default (config: VersionRouterConfig) => {
 
       let shouldStop = false;
       for (let i = 0; !shouldStop && i < handlers.length; i += 1) {
+        // eslint-disable-next-line no-loop-func
         handlers[i](req, res, err => {
           if (err) {
             shouldStop = true;

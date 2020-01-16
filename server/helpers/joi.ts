@@ -16,6 +16,7 @@ function password(joi) {
           message: 'must be between 0 and 4',
         }],
         method(minScore) {
+          // @ts-ignore
           return this.$_addRule({ name: 'password', args: { minScore }, errorCode: 'string.password' });
         },
         validate(value, helpers, args) {
@@ -26,7 +27,7 @@ function password(joi) {
 
           return value;
         },
-      }
+      },
     },
   };
 }

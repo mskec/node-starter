@@ -14,7 +14,7 @@
       "node": {
         "extensions": [".js", ".ts"]
       }
-    }
+    },
   },
   "rules": {
     "max-len": ["warn", 120],
@@ -23,8 +23,11 @@
     "no-underscore-dangle": "off",
     "camelcase": "off",
     "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*.test.ts"]}],
+    "import/extensions": ["warn", {
+      "ts": "never",
+      "js": "never"
+    }],
     "lines-between-class-members": "off",
-
     "no-trailing-spaces": "off",
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": ["error", {"vars": "all", "args": "after-used", "ignoreRestSiblings": true}],

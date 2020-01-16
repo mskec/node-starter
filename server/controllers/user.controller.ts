@@ -32,7 +32,6 @@ async function update(req, res, next) {
 
     const updatedUser = await user.update(dataToUpdate);
     res.json(User.format(updatedUser));
-
   } catch (e) {
     next(e);
   }

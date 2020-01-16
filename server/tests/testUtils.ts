@@ -16,7 +16,7 @@ import User from '../models/user.model';
  * );
  */
 const nukeDB = () => Promise.all([
-  User.destroy({ truncate: true, cascade: true })
+  User.destroy({ truncate: true, cascade: true }),
 ]);
 
 const delayVerifyRestore = mock => Promise.delay(20)
