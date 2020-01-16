@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express';
-import validate from 'express-validation';
+import { celebrate, Segments } from 'celebrate';
 import Joi from './joi';
 
 interface VersionRouterConfig {
@@ -23,10 +23,10 @@ export default (config: VersionRouterConfig) => {
   }
 
   return [
-    validate({
-      headers: {
+    celebrate({
+      [Segments.HEADERS]: Joi.object({
         'app-build': Joi.number().min(1),
-      },
+      }).unknown(true),
     }),
     (req, res, next) => {
       const { 'app-build': appBuild } = req.headers;

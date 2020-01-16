@@ -1,5 +1,5 @@
 import express from 'express';
-import validate from 'express-validation';
+import { celebrate as validate } from 'celebrate';
 import authMiddleware from '../helpers/authMiddleware';
 import userCtrl from '../controllers/user.controller';
 import paramValidation from './validations/user.validation';
@@ -13,6 +13,6 @@ router.route('/')
   .get(userCtrl.get)
 
   /** PATCH /api/user - Update a user */
-  .patch(validate(paramValidation.updateUser), userCtrl.update);
+  .patch(validate(paramValidation.updateUser, { abortEarly: false }), userCtrl.update);
 
 export default router;

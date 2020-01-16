@@ -7,7 +7,7 @@ import methodOverride from 'method-override';
 import cors from 'cors';
 import httpStatus from 'http-status';
 import expressWinston from 'express-winston';
-import expressValidation from 'express-validation';
+import { isCelebrate } from 'celebrate';
 import helmet from 'helmet';
 import Sequelize from 'sequelize';
 import swaggerUi from 'swagger-ui-express';
@@ -57,9 +57,9 @@ app.use('/api', routes);
 
 // if error is not an instanceOf APIError, convert it.
 app.use((err, req, res, next) => {
-  if (err instanceof expressValidation.ValidationError) {
+  if (isCelebrate(err)) {
     return next(new APIError({
-      message: err.errors.map(error => error.messages.join('. ')).join(' and '),
+      message: err.joi.details.map(error => error.message).join(' and '),
       status: httpStatus.BAD_REQUEST,
       isPublic: true,
     }));

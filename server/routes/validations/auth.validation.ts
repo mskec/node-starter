@@ -1,9 +1,10 @@
+import { Segments } from 'celebrate';
 import Joi from '../../helpers/joi';
 
 export default {
   // POST /api/auth/registration
   registration: {
-    body: {
+    [Segments.BODY]: {
       email: Joi.string().max(255).email().required(),
       displayName: Joi.string().max(255).min(5),
       password: Joi.string().password(2).required(),
@@ -12,7 +13,7 @@ export default {
 
   // POST /api/auth/login
   login: {
-    body: {
+    [Segments.BODY]: {
       email: Joi.string().max(255).email().required(),
       password: Joi.string().required(),
     },

@@ -1,31 +1,37 @@
-import BaseJoi from 'joi';
+import { Joi } from 'celebrate';
 import zxcvbn from 'zxcvbn';
 
-function password(joi: BaseJoi.Root): BaseJoi.Extension {
+function password(joi) {
   return {
-    name: 'string',
+    type: 'string',
     base: joi.string(),
-    language: {
-      password: 'must be stronger',
+    messages: {
+      'string.password': '"{{#label}}" must be stronger',
     },
-    rules: [{
-      name: 'password',
-      params: {
-        minScore: BaseJoi.number().required().min(0).max(4),
-      },
-      validate(params, value, state, options) {
-        const result = zxcvbn(value);
-        if (result.score < params.minScore) {
-          return this.createError('string.password', { value }, state, options);
-        }
+    rules: {
+      password: {
+        args: [{
+          name: 'minScore',
+          assert: value => typeof value === 'number' && value >= 0 && value <= 4,
+          message: 'must be between 0 and 4',
+        }],
+        method(minScore) {
+          return this.$_addRule({ name: 'password', args: { minScore }, errorCode: 'string.password' });
+        },
+        validate(value, helpers, args) {
+          const result = zxcvbn(value);
+          if (result.score < args.minScore) {
+            return helpers.error('string.password');
+          }
 
-        return value;
-      },
-    }],
+          return value;
+        },
+      }
+    },
   };
 }
 
-export default BaseJoi
+export default Joi
   .extend(
     password,
   );
