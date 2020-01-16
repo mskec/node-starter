@@ -1,0 +1,4 @@
+# Ideas
+
+* Blacklisting tokens
+* 

@@ -1,0 +1,171 @@
+openapi: '3.0.0'
+info:
+  title: node starter
+  version: 1.0.0
+  description: ''
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    user:
+      type: object
+      properties:
+        id:
+          type: string
+          format: UUID/v4
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+        isEmailVerified:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    user_token:
+      type: object
+      properties:
+        id:
+          type: string
+          format: UUID/v4
+        token:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+        isEmailVerified:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+paths:
+  /api/health-check:
+    get:
+      summary: Service health check
+      responses:
+        200:
+          description: OK
+  /api/auth/login:
+    post:
+      summary: User login
+      tags:
+        - Auth
+      requestBody:
+        description: User credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        200:
+          description: Auth successful, returning JWT and user data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user_token"
+        400:
+          description: Missing credentials
+        401:
+          description: Invalid credential or the user doesn't exist
+  /api/auth/registration:
+    post:
+      summary: User registration
+      tags:
+        - Auth
+      requestBody:
+        description: User registration data
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        201:
+          description: User is created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user_token"
+        400:
+          description: Missing some of the required fileds
+  /api/auth/token-refresh:
+    post:
+      summary: Issuing a new JWT based on an expired one
+      tags:
+        - Auth
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: New token and user profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user_token"
+        401:
+          description: User doesn't exist or missing Auth header
+
+  /api/user:
+    get:
+      summary: Current user's profile
+      security:
+        - bearerAuth: []
+      tags:
+        - User
+      responses:
+        200:
+          description: User's data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user"
+
+    patch:
+      summary: Update an user
+      security:
+        - bearerAuth: []
+      tags:
+        - User
+      requestBody:
+        description: Update an user
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                display_name:
+                  type: string
+      responses:
+        200:
+          description: User updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user"
