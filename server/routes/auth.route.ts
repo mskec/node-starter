@@ -15,4 +15,8 @@ router.route('/registration')
 router.route('/token-refresh')
   .post(authMiddleware({ ignoreExpiration: true }), authCtrl.tokenRefresh);
 
+router.route('/token-blacklist')
+  .post(validate(paramValidation.tokenBlacklist, { abortEarly: false }), authCtrl.tokenBlacklist);
+
+
 export default router;

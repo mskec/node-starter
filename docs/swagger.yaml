@@ -130,6 +130,25 @@ paths:
                 $ref: "#/components/schemas/user_token"
         401:
           description: User doesn't exist or missing Auth header
+  /api/auth/token-blacklist:
+    post:
+      summary: Blacklist a token (jti)
+      tags:
+        - Auth
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                jti:
+                  type: string
+      responses:
+        201:
+          description: The token has been blacklisted
 
   /api/user:
     get:

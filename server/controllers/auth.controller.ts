@@ -3,8 +3,10 @@ import jwt from 'jsonwebtoken';
 import _ from 'lodash';
 import httpStatus from 'http-status';
 import config from '../../config/config';
-import User from '../models/user.model';
 import APIError from '../helpers/APIError';
+import shortid from '../helpers/shortid';
+import BlacklistedToken from '../models/blacklistedToken.model';
+import User from '../models/user.model';
 
 /** Register a new user */
 async function registration(req, res, next) {
@@ -50,11 +52,23 @@ async function tokenRefresh(req, res, next) {
   }
 }
 
+/** Blacklist a token (jti) */
+async function tokenBlacklist(req, res, next) {
+  try {
+    const { jti } = req.body;
+    await BlacklistedToken.create({ jti });
+    res.status(httpStatus.CREATED).send();
+  } catch (e) {
+    next(e);
+  }
+}
+
 /** Helper functions */
 export function signUserToken(user, opts = {}) {
   return jwt.sign({
     user_id: user.id,
     role: user.role,
+    jti: shortid(7),
   }, config.jwtPrivateKey, {
     algorithm: 'RS512',
     expiresIn: config.env === 'production' ? '1d' : '7d',
@@ -66,5 +80,6 @@ export default {
   registration,
   login,
   tokenRefresh,
+  tokenBlacklist,
   signUserToken,
 };

@@ -18,4 +18,11 @@ export default {
       password: Joi.string().required(),
     },
   },
+
+  // POST /api/auth/token-blacklist
+  tokenBlacklist: {
+    [Segments.BODY]: {
+      jti: Joi.string().max(10).required(),
+    },
+  },
 };

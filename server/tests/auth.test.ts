@@ -204,4 +204,8 @@ describe('# Auth API', () => {
       });
     });
   });
+
+  describe('## POST /api/auth/token-blacklist', () => {
+    // TODO implement
+  });
 });

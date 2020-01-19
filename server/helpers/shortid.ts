@@ -1,5 +1,5 @@
-/** Create random strings with given length */
-export default length => {
+/** Create a random string with the given length */
+export default (length = 6) => {
   const charArr = [];
   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
