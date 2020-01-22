@@ -2,6 +2,7 @@ import request from 'supertest';
 import httpStatus from 'http-status';
 import chai from 'chai';
 import app from '../..';
+import factory from './factory';
 import testUtils from './testUtils';
 
 const { expect } = chai;
@@ -17,7 +18,7 @@ describe('# User API', () => {
 
   before(async () => {
     await testUtils.nukeDB();
-    const { token } = await testUtils.createUserAndLogin(testUser);
+    const { token } = await factory.createUserAndToken(testUser);
     tToken = token;
   });
 

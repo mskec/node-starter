@@ -3,8 +3,8 @@
 import request from 'supertest';
 import httpStatus from 'http-status';
 import _ from 'lodash';
-import faker from 'faker';
 import app from '../..';
+import BlacklistedToken from '../models/blacklistedToken.model';
 import User from '../models/user.model';
 
 /**
@@ -16,6 +16,7 @@ import User from '../models/user.model';
  * );
  */
 const nukeDB = () => Promise.all([
+  BlacklistedToken.destroy({ truncate: true, cascade: true }),
   User.destroy({ truncate: true, cascade: true }),
 ]);
 
@@ -34,16 +35,6 @@ async function loginUser(user) {
   return res.body;
 }
 
-async function createUserAndLogin(userData?) {
-  const dummyData = {
-    password: 'very_hard_to_break_password_1947201',
-    email: faker.internet.email().toLowerCase(),
-  };
-  const user = await User.create({ ...dummyData, ...userData });
-  const { token } = await loginUser({ ...dummyData, ...userData });
-  return { user, token };
-}
-
 function shouldRequireAuth(method: 'get' | 'post' | 'patch' | 'delete' | 'head', route: string, appBuild?: number) {
   it(
     'should require authentication token',
@@ -55,6 +46,5 @@ export default {
   delayVerifyRestore,
   nukeDB,
   loginUser,
-  createUserAndLogin,
   shouldRequireAuth,
 };

@@ -1,14 +1,18 @@
+/* eslint-disable no-unused-expressions */
 import _ from 'lodash';
 import httpStatus from 'http-status';
 import jwt from 'jsonwebtoken';
 import chai from 'chai';
-import chaiHttp from 'chai-http'; // eslint-disable-line import/newline-after-import
+import chaiHttp from 'chai-http';
 import request from 'supertest';
 import config from '../../config/config';
 import { signUserToken } from '../controllers/auth.controller';
 import app from '../../index';
 import User from '../models/user.model';
+import factory from './factory';
 import testUtils from './testUtils';
+import BlacklistedToken from '../models/blacklistedToken.model';
+import { AuthToken } from '../index.d';
 
 chai.use(chaiHttp);
 const { expect } = chai;
@@ -164,10 +168,8 @@ describe('# Auth API', () => {
 
       expect(res.body).to.have.property('token');
 
-      jwt.verify(res.body.token, config.jwtPublicKey, { algorithms: ['RS512'] }, (err, decoded) => {
-        // @ts-ignore
-        expect(decoded.user_id).to.equal(savedUser.id);
-      });
+      const decoded = jwt.verify(res.body.token, config.jwtPublicKey, { algorithms: ['RS512'] }) as AuthToken;
+      expect(decoded.user_id).to.equal(savedUser.id);
     }
 
     it('should get valid JWT token', async () => validateSuccessfulLogIn(_.pick(testUser, ['email', 'password'])));
@@ -198,14 +200,48 @@ describe('# Auth API', () => {
         .set('Authorization', `Bearer ${expiredToken}`)
         .expect(httpStatus.OK);
 
-      jwt.verify(res.body.token, config.jwtPublicKey, { algorithms: ['RS512'] }, (err, decoded) => {
-        // @ts-ignore
-        expect(decoded.user_id).to.equal(savedUser.id);
-      });
+      const decoded = jwt.verify(res.body.token, config.jwtPublicKey, { algorithms: ['RS512'] }) as AuthToken;
+      expect(decoded.user_id).to.equal(savedUser.id);
     });
   });
 
   describe('## POST /api/auth/token-blacklist', () => {
-    // TODO implement
+    it('should blacklist a token by jit', async () => {
+      const { token } = await factory.createUserAndToken();
+
+      const { jti } = jwt.verify(token, config.jwtPublicKey, { algorithms: ['RS512'] }) as AuthToken;
+
+      await request(app)
+        .post('/api/auth/token-blacklist')
+        .send({ jti })
+        .expect(httpStatus.CREATED);
+
+      const blacklistInstance = await BlacklistedToken.findByPk(jti);
+      expect(blacklistInstance).to.exist;
+
+      await request(app)
+        .post('/api/auth/token-refresh')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(httpStatus.UNAUTHORIZED);
+    });
+
+    it('should error on repeated blacklist attempt', async () => {
+      const { token } = await factory.createUserAndToken();
+
+      const { jti } = jwt.verify(token, config.jwtPublicKey, { algorithms: ['RS512'] }) as AuthToken;
+
+      await request(app)
+        .post('/api/auth/token-blacklist')
+        .send({ jti })
+        .expect(httpStatus.CREATED);
+
+      const blacklistInstance = await BlacklistedToken.findByPk(jti);
+      expect(blacklistInstance).to.exist;
+
+      await request(app)
+        .post('/api/auth/token-blacklist')
+        .send({ jti })
+        .expect(httpStatus.BAD_REQUEST);
+    });
   });
 });
