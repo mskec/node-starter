@@ -1,5 +1,6 @@
 import httpStatus from 'http-status';
 import _ from 'lodash';
+import bcrypt from 'bcryptjs';
 import APIError from '../helpers/APIError';
 import User from '../models/user.model';
 
@@ -37,6 +38,29 @@ async function update(req, res, next) {
   }
 }
 
+/** Changes user's password */
+async function passwordChange(req, res, next) {
+  try {
+    const { user: { user_id: userId }, body: { password, oldPassword } } = req;
+    const user = await User.findByPk(userId);
+    if (!user) {
+      throw new APIError({ status: httpStatus.UNAUTHORIZED, isPublic: true });
+    }
+
+    const isValid = await bcrypt.compare(oldPassword, user.password);
+    if (!isValid) {
+      throw new APIError({ status: httpStatus.BAD_REQUEST, isPublic: true });
+    }
+
+    await user.update({ password });
+    res.status(httpStatus.OK).json();
+  } catch (e) {
+    next(e);
+  }
+}
+
 export default {
-  get, update,
+  get,
+  update,
+  passwordChange,
 };

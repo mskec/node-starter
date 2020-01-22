@@ -8,4 +8,12 @@ export default {
       displayName: Joi.string().max(255).min(5),
     },
   },
+
+  // POST /api/user/password
+  passwordChange: {
+    [Segments.BODY]: {
+      password: Joi.string().required(),
+      oldPassword: Joi.string().required(),
+    },
+  },
 };

@@ -1,22 +1,22 @@
 import express from 'express';
-import { celebrate as validate } from 'celebrate';
-import authMiddleware from '../helpers/authMiddleware';
-import paramValidation from './validations/auth.validation';
 import authCtrl from '../controllers/auth.controller';
+import authMiddleware from '../middlewares/auth.middleware';
+import validateMiddleware from '../middlewares/validate.middleware';
+import validationSchema from './validations/auth.validation';
 
 const router = express.Router();
 
 router.route('/login')
-  .post(validate(paramValidation.login, { abortEarly: false }), authCtrl.login);
+  .post(validateMiddleware(validationSchema.login), authCtrl.login);
 
 router.route('/registration')
-  .post(validate(paramValidation.registration, { abortEarly: false }), authCtrl.registration);
+  .post(validateMiddleware(validationSchema.registration), authCtrl.registration);
 
 router.route('/token-refresh')
   .post(authMiddleware({ ignoreExpiration: true }), authCtrl.tokenRefresh);
 
 router.route('/token-blacklist')
-  .post(validate(paramValidation.tokenBlacklist, { abortEarly: false }), authCtrl.tokenBlacklist);
+  .post(validateMiddleware(validationSchema.tokenBlacklist), authCtrl.tokenBlacklist);
 
 
 export default router;

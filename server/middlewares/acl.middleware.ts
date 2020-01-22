@@ -1,5 +1,5 @@
 import httpStatus from 'http-status';
-import APIError from './APIError';
+import APIError from '../helpers/APIError';
 
 
 /**

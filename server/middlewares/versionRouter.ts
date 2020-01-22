@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
 import { celebrate, Segments } from 'celebrate';
-import Joi from './joi';
+import Joi from '../helpers/joi';
 
 interface VersionRouterConfig {
   [key: number]: RequestHandler[]

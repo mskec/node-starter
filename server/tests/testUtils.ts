@@ -26,11 +26,11 @@ const delayVerifyRestore = mock => Promise.delay(20)
     mock.restore();
   });
 
-async function loginUser(user) {
+async function loginUser(user, expectedStatus?) {
   const res = await request(app)
     .post('/api/auth/login')
     .send(_.pick(user, ['email', 'password']))
-    .expect(httpStatus.OK);
+    .expect(expectedStatus ?? httpStatus.OK);
 
   return res.body;
 }

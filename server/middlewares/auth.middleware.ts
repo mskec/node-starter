@@ -1,8 +1,8 @@
 import httpStatus from 'http-status';
 import LRU from 'lru-cache';
 import { AuthToken, Request } from '../index'; // eslint-disable-line import/no-unresolved
-import jwt from './jwt';
-import APIError from './APIError';
+import APIError from '../helpers/APIError';
+import jwt from '../helpers/jwt';
 import BlacklistedToken from '../models/blacklistedToken.model';
 
 const jtiCache = new LRU({

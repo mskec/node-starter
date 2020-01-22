@@ -66,4 +66,36 @@ describe('# User API', () => {
 
     testUtils.shouldRequireAuth('patch', '/api/user');
   });
+
+  describe('## POST /api/user/password', () => {
+    it("should update user's password", async () => {
+      const password = 'very_long_password';
+      const { user, token } = await factory.createUserAndToken({ password });
+
+      const newPassword = 'new_very_long_password';
+      await request(app)
+        .post('/api/user/password')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ oldPassword: password, password: newPassword })
+        .expect(httpStatus.OK);
+
+      await testUtils.loginUser({ email: user.email, password: newPassword });
+    });
+
+    it("should not update user's password if the old one is wrong", async () => {
+      const password = 'very_long_password';
+      const { user, token } = await factory.createUserAndToken({ password });
+
+      const newPassword = 'new_very_long_password';
+      await request(app)
+        .post('/api/user/password')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ oldPassword: 'wrong_old_password', password: newPassword })
+        .expect(httpStatus.BAD_REQUEST);
+
+      await testUtils.loginUser({ email: user.email, password: newPassword }, httpStatus.UNAUTHORIZED);
+    });
+
+    testUtils.shouldRequireAuth('post', '/api/user/password');
+  });
 });

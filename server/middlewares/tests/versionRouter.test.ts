@@ -1,7 +1,7 @@
 import request from 'supertest';
 import httpStatus from 'http-status';
 import chai from 'chai';
-import app from '../../..';
+import app from '../../../index';
 import versionRouter from '../versionRouter';
 
 const { expect } = chai;
