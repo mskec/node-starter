@@ -135,8 +135,6 @@ paths:
       summary: Blacklist a token (jti)
       tags:
         - Auth
-      security:
-        - bearerAuth: []
       requestBody:
         required: true
         content:
