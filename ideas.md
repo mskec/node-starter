@@ -7,15 +7,15 @@
 **Multi-service project structure**
 ```
 /server
-  /alarmWatcher
+  /some-service
   /common
-    /api
+    /third-party-api
     /models
     /services
   /config
     config.ts
     database.js
-  /express
+  /api
     /controllers
     /routes
       index.route.ts

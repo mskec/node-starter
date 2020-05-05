@@ -9,6 +9,9 @@ const envVarsSchema = Joi.object({
     .allow('development', 'production', 'test', 'provision')
     .default('development'),
   PORT: Joi.number().default(4040),
+  LOG_LEVEL: Joi.string()
+    .allow('info', 'verbose', 'debug', 'error')
+    .default(process.env.NODE_ENV === 'development' ? 'verbose' : 'info'),
 
   DB_HOST: Joi.string().required().description('Database host'),
   DB_NAME: Joi.string().required().description('Database name'),
@@ -28,6 +31,7 @@ if (error) {
 export default {
   env: envVars.NODE_ENV,
   port: envVars.PORT,
+  logLevel: envVars.LOG_LEVEL,
   dbHost: envVars.DB_HOST,
   dbName: envVars.DB_NAME,
   dbUser: envVars.DB_USER,
