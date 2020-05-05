@@ -9,14 +9,13 @@ services:
     depends_on:
       - postgres
     ports:
-      - "5000:5000"
+      - 5000:5000
 
   postgres:
     image: postgres
     ports:
       - 5432:5432
-    environment:
-      - POSTGRES_PASSWORD=password
+    env_file: .env.db
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
