@@ -1,10 +1,9 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import faker from 'faker';
-import { Promise as BPromise } from 'sequelize';
 import User from '../models/user.model';
 import { signUserToken } from '../controllers/auth.controller';
 
-function createUser(userData?): BPromise<User> {
+function createUser(userData?): Promise<User> {
   const dummyData = {
     password: 'very_hard_to_break_password_1947201',
     email: faker.internet.email().toLowerCase(),

@@ -13,7 +13,10 @@ async function registration(req, res, next) {
   try {
     const userData = _.pick(req.body, ['email', 'password', 'displayName']);
     const user = await User.create({ ...userData, email: userData.email.toLowerCase() });
-    res.status(httpStatus.CREATED).json(Object.assign({ token: signUserToken(user) }, User.format(user)));
+    res.status(httpStatus.CREATED).json({
+      ...User.format(user),
+      token: signUserToken(user),
+    });
   } catch (e) {
     next(e);
   }
@@ -31,8 +34,7 @@ async function login(req, res, next) {
     if (!isValid) {
       throw new APIError({ status: httpStatus.UNAUTHORIZED, isPublic: true });
     }
-
-    res.json(Object.assign({ token: signUserToken(user) }, User.format(user)));
+    res.json({ ...User.format(user), token: signUserToken(user) });
   } catch (e) {
     next(e);
   }
@@ -46,7 +48,7 @@ async function tokenRefresh(req, res, next) {
       throw new APIError({ status: httpStatus.UNAUTHORIZED, isPublic: true });
     }
 
-    res.json(Object.assign({ token: signUserToken(user) }, User.format(user)));
+    res.json({ ...User.format(user), token: signUserToken(user) });
   } catch (e) {
     next(e);
   }

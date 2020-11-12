@@ -18,5 +18,4 @@ router.route('/token-refresh')
 router.route('/token-blacklist')
   .post(validateMiddleware(validationSchema.tokenBlacklist), authCtrl.tokenBlacklist);
 
-
 export default router;

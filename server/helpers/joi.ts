@@ -6,7 +6,7 @@ function password(joi) {
     type: 'string',
     base: joi.string(),
     messages: {
-      'string.password': '"{{#label}}" must be stronger',
+      'string.password': '{{#label}} must be stronger',
     },
     rules: {
       password: {

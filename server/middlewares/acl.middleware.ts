@@ -1,7 +1,6 @@
 import httpStatus from 'http-status';
 import APIError from '../helpers/APIError';
 
-
 /**
  * Checks if the user is allowed to call the route.
  * Usage:

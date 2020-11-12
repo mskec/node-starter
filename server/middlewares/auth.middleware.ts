@@ -23,7 +23,7 @@ const DEFAULT_VERIFY_OPTS: VerifyOpts = {
 export default (verifyOpts: VerifyOpts = DEFAULT_VERIFY_OPTS) =>
   // eslint-disable-next-line implicit-arrow-linebreak
   (req: Request, res, next) => {
-    const token = req.headers.authorization;
+    const token = req.header('authorization');
     if (!token) {
       if (verifyOpts.isOptional) {
         next();

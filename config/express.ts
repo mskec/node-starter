@@ -7,7 +7,7 @@ import methodOverride from 'method-override';
 import cors from 'cors';
 import httpStatus from 'http-status';
 import expressWinston from 'express-winston';
-import { isCelebrate } from 'celebrate';
+import { CelebrateError, isCelebrateError } from 'celebrate';
 import helmet from 'helmet';
 import Sequelize from 'sequelize';
 import swaggerUi from 'swagger-ui-express';
@@ -57,9 +57,17 @@ app.use('/api', routes);
 
 // if error is not an instanceOf APIError, convert it.
 app.use((err, req, res, next) => {
-  if (isCelebrate(err)) {
+  if (isCelebrateError(err)) {
+    const messages = [];
+    // Validation segments: body, cookies, headers, etc.
+    (err as CelebrateError).details.forEach(segmentError => {
+      // Validation errors per segment
+      segmentError.details.forEach(value => {
+        messages.push(value.message);
+      });
+    });
     return next(new APIError({
-      message: err.joi.details.map(error => error.message).join(' and '),
+      message: messages.join(' and '),
       status: httpStatus.BAD_REQUEST,
       isPublic: true,
     }));

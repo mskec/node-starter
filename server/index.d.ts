@@ -9,6 +9,6 @@ export interface AuthToken {
   exp: number
 }
 
-export interface Request<P = null> extends ExpressRequest<P> {
+export type Request<P = null> = ExpressRequest<P> & {
   user: AuthToken
 }
