@@ -1,4 +1,4 @@
-FROM node:14-alpine
+FROM node:14-alpine as builder
 
 # create app directory in container
 RUN mkdir -p /app
@@ -16,18 +16,28 @@ RUN apk --no-cache add git
 # install node packages (including dev)
 RUN yarn install
 
-# Removing install dependencies
-RUN apk del git
-
 # copy all file from current dir to /app in container
 COPY . /app/
 
 # build project
-RUN NODE_ENV=production npm run copy-assets
-# build with increased memory (typescript compiler requires a large amount of memory)
-#RUN node --max-old-space-size=2048 node_modules/typescript/bin/tsc
-RUN node node_modules/typescript/bin/tsc
+RUN NODE_ENV=production npm run build
+
+# Remove node modules that contains dev-dependencies
+RUN rm -r node_modules
+
+# Install only runtime dependencies
+RUN yarn install --production
+
+# Runtime image
+FROM node:14-alpine
+
+WORKDIR /app
+
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/.sequelizerc ./
+COPY --from=builder /app/db db
+COPY --from=builder /app/build build
+COPY --from=builder /app/node_modules node_modules
 
 # cmd to start the service
-# Entrypoint is used in docker-compose.yml
-#CMD [ "npm", "start" ]
+CMD [ "npm", "start" ]
