@@ -5,3 +5,7 @@ The goal of this change log is to log:
   - migrations
   - environment setting changes
   - all other changes that might affect users
+
+## 2022-02-02 Updated dependencies
+
+- 

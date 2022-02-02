@@ -1,3 +1,4 @@
+#!/bin/bash
 
 mkdir -p tmp
 openssl genpkey -algorithm RSA -out tmp/private.pem -pkeyopt rsa_keygen_bits:4096

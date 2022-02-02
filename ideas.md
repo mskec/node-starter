@@ -2,6 +2,7 @@
 
 * ~~Blacklisting tokens~~
 * Multi-service project structure
+* gitlab CI config
 
 
 **Multi-service project structure**

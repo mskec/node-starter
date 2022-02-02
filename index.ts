@@ -1,4 +1,5 @@
-// config should be imported before importing any other file
+/* eslint-disable import/no-import-module-exports */
+// config must be imported before importing the app
 import config from './config/config';
 import app from './config/express';
 

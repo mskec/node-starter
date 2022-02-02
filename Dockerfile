@@ -1,4 +1,4 @@
-FROM node:14-alpine as builder
+FROM node:16-alpine as builder
 
 # create app directory in container
 RUN mkdir -p /app
@@ -20,7 +20,7 @@ RUN yarn install
 COPY . /app/
 
 # build project
-RUN NODE_ENV=production npm run build
+RUN NODE_ENV=production yarn build
 
 # Remove node modules that contains dev-dependencies
 RUN rm -r node_modules
@@ -29,7 +29,7 @@ RUN rm -r node_modules
 RUN yarn install --production
 
 # Runtime image
-FROM node:14-alpine
+FROM node:16-alpine
 
 WORKDIR /app
 
@@ -40,4 +40,4 @@ COPY --from=builder /app/build build
 COPY --from=builder /app/node_modules node_modules
 
 # cmd to start the service
-CMD [ "npm", "start" ]
+CMD [ "yarn", "start" ]

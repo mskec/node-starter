@@ -21,5 +21,4 @@ services:
 
 volumes:
   postgres-data:
-    external:
-      name: postgres-data
+    name: postgres-data
