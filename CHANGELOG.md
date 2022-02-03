@@ -7,5 +7,3 @@ The goal of this change log is to log:
   - all other changes that might affect users
 
 ## 2022-02-02 Updated dependencies
-
-- 

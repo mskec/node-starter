@@ -98,11 +98,6 @@
     "ts-node": "^10.4.0",
     "typescript": "^4.5.5"
   },
-  "husky": {
-    "hooks": {
-      "pre-push": "npm run lint && npm test"
-    }
-  },
   "mocha": {
     "ui": "bdd",
     "reporter": "spec",
